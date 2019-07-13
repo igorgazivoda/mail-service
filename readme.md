@@ -51,8 +51,4 @@ The data payload can be JSON or URL-encoded (x-www-form-urlencoded).
 * `subject` - email subject
 * `body` - plain-text email body
 * `replyTo` (optional) - reply-to email
-# mail-service
-# mail-service
-# mail-service
-# mail-service
-# mail-service
+
