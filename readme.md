@@ -1,8 +1,6 @@
 # micromailer
 
-A Node.js microservice for sending email to a whitelisted email address.
-
-Works great with [now.sh](https://zeit.co/now).
+A Node.js microservice for sending email
 
 ## Example
 
@@ -25,14 +23,7 @@ SMTP_USER=XXX
 SMTP_PASSWORD=XXX
 MAX_BODY_SIZE=10000
 ```
-
-Deploy to now with:
-
-```
-now --dotenv
-```
-
-Or run locally:
+run locally:
 
 ```
 node index.js
@@ -51,8 +42,3 @@ The data payload can be JSON or URL-encoded (x-www-form-urlencoded).
 * `subject` - email subject
 * `body` - plain-text email body
 * `replyTo` (optional) - reply-to email
-# mail-service
-# mail-service
-# mail-service
-# mail-service
-# mail-service
