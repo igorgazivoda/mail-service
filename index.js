@@ -69,7 +69,7 @@ app.post('/send', (req, res) => {
         return;
     }
     let html = req.body.html;
-    if (!subject || typeof subject !== 'string') {
+    if (html && typeof html !== 'string') {
         res.status(400).send('Missing html');
         return;
     }
