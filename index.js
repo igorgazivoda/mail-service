@@ -57,15 +57,20 @@ app.post('/send', (req, res) => {
         res.status(400).send('Missing body');
         return;
     }
-    
+
     let toEmail = req.body.toEmail;
-    if (toEmail && (typeof toEmail !== 'string' || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(toEmail))){
+    if (toEmail && (typeof toEmail !== 'string' || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(toEmail))) {
         res.status(400).send('Invalid toEmail');
         return;
     }
     let replyTo = req.body.replyTo;
     if (replyTo && (typeof replyTo !== 'string' || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(replyTo))) {
         res.status(400).send('Invalid replyTo');
+        return;
+    }
+    let html = req.body.html;
+    if (!subject || typeof subject !== 'string') {
+        res.status(400).send('Missing html');
         return;
     }
 
@@ -78,6 +83,7 @@ app.post('/send', (req, res) => {
         to: toEmail,
         subject: subject,
         text: body,
+        html: html
     };
     if (replyTo) {
         mailOptions.replyTo = replyTo;
