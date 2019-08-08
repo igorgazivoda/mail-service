@@ -69,15 +69,15 @@ app.post('/send', (req, res) => {
         return;
     }
     let html = req.body.html;
-    if (html && typeof html !== 'string') {
-        res.status(400).send('Missing html');
-        return;
-    }
+    // if (html && typeof html !== 'string') {
+    //     res.status(400).send('Missing html');
+    //     return;
+    // }
 
     fromName = fromName.substring(0, 100).replace(/[^a-zA-Z0-9\-\.\_\ ]/, '');
     subject = subject.substring(0, 200);
     body = body.substring(0, parseInt(process.env.MAX_BODY_SIZE, 10) || 10000);
-
+ 
     const mailOptions = {
         from: '"' + fromName + '" <' + fromEmail + '>',
         to: toEmail,
@@ -102,5 +102,5 @@ app.post('/send', (req, res) => {
 
 const server = app.listen(app.get('port'), () => {
     const port = server.address().port;
-    console.log('Server running at http://localhost:' + port);
+    console.log('Server running at https://localhost:' + port);
 });
