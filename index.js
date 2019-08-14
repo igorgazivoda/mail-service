@@ -53,10 +53,10 @@ app.post('/send', (req, res) => {
         return;
     }
     let body = req.body.body;
-    if (!body || typeof body !== 'string') {
-        res.status(400).send('Missing body');
-        return;
-    }
+    // if (!body || typeof body !== 'string') {
+    //     res.status(400).send('Missing body');
+    //     return;
+    // }
 
     let toEmail = req.body.toEmail;
     if (toEmail && (typeof toEmail !== 'string' || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(toEmail))) {
