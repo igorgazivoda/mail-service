@@ -23,6 +23,25 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+let fromEmail2 = process.env.FROM_EMAIL2;
+if (!fromEmail2) {
+    console.log('Missing FROM_EMAIL2 env var');
+    // process.exit(1);
+}
+
+const transporter2 = nodemailer.createTransport({
+    // service: process.env.SMTP_SERVICE,
+    tls: { rejectUnauthorized: false },
+    host: process.env.SMTP_HOST2,
+    port: parseInt(process.env.SMTP_PORT2, 10) || 465,
+    secure: true, // secure:true for port 465, secure:false for port 587
+    auth: {
+        user: process.env.SMTP_USER2,
+        pass: process.env.SMTP_PASSWORD2
+    }
+});
+
+
 const app = express();
 app.set('port', process.env.PORT || 3000);
 app.use(bodyParser.json());
@@ -53,10 +72,7 @@ app.post('/send', (req, res) => {
         return;
     }
     let body = req.body.body;
-    // if (!body || typeof body !== 'string') {
-    //     res.status(400).send('Missing body');
-    //     return;
-    // }
+    let html = req.body.html;
 
     let toEmail = req.body.toEmail;
     if (toEmail && (typeof toEmail !== 'string' || !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(toEmail))) {
@@ -68,16 +84,13 @@ app.post('/send', (req, res) => {
         res.status(400).send('Invalid replyTo');
         return;
     }
-    let html = req.body.html;
-    // if (html && typeof html !== 'string') {
-    //     res.status(400).send('Missing html');
-    //     return;
-    // }
+    let emailServer = req.body.emailServer;
+
 
     fromName = fromName.substring(0, 100).replace(/[^a-zA-Z0-9\-\.\_\ ]/, '');
     subject = subject.substring(0, 200);
     body = body.substring(0, parseInt(process.env.MAX_BODY_SIZE, 10) || 10000);
- 
+
     const mailOptions = {
         from: '"' + fromName + '" <' + fromEmail + '>',
         to: toEmail,
@@ -89,15 +102,47 @@ app.post('/send', (req, res) => {
         mailOptions.replyTo = replyTo;
     }
 
-    transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send(err.message);
-            return;
-        }
-        console.log('Message %s sent: %s', info.messageId, info.response);
-        res.send('sent');
-    });
+    // Default mail server .me
+    if (!emailServer || typeof emailServer !== 'string') {
+
+        const mailOptions = {
+            from: '"' + fromName + '" <' + fromEmail + '>',
+            to: toEmail,
+            subject: subject,
+            text: body,
+            html: html
+        };
+        transporter.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send(err.message);
+                return;
+            }
+            console.log('Message %s sent from .me : %s', info.messageId, info.response);
+            res.send('sent');
+        });
+    }
+    // Second server .xyz case 
+    else {
+
+        const mailOptions = {
+            from: '"' + fromName + '" <' + fromEmail2 + '>',
+            to: toEmail,
+            subject: subject,
+            text: body,
+            html: html
+        };
+        transporter2.sendMail(mailOptions, (err, info) => {
+            if (err) {
+                console.log(err);
+                res.status(500).send(err.message);
+                return;
+            }
+            console.log('Message %s sent from .xyz : %s', info.messageId, info.response);
+            res.send('sent');
+        });
+    }
+
 });
 
 const server = app.listen(app.get('port'), () => {
